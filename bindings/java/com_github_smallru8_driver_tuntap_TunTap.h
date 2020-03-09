@@ -69,7 +69,7 @@ JNIEXPORT jint JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tuntap_1set
  * Method:    tuntap_get_hwaddr
  * Signature: ()Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tuntap_1get_1hwaddr
+JNIEXPORT jbyteArray JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tuntap_1get_1hwaddr
   (JNIEnv *, jobject);
 
 /*

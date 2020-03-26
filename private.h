@@ -13,6 +13,8 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+#ifndef PRIVATE_H
+#define PRIVATE_H
 
 #include <sys/types.h>
 
@@ -120,4 +122,5 @@ int	 tuntap_sys_set_ifname(struct device *, const char *, size_t);
 int	 tuntap_sys_set_descr(struct device *, const char *, size_t);
 char	*tuntap_sys_get_descr(struct device *);
 
+#endif
 #endif

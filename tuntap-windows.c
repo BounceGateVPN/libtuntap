@@ -173,8 +173,8 @@ tuntap_start(struct device *dev, int mode, int tun) {
 
 	deviceid = reg_query(NETWORK_ADAPTERS);
 	snprintf(buf, sizeof buf, "\\\\.\\Global\\%s.tap", deviceid);
-	//tun_fd = CreateFile(buf, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM|FILE_FLAG_OVERLAPPED, 0);
-	tun_fd = CreateFile(buf, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, 0);
+	tun_fd = CreateFile(buf, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM|FILE_FLAG_OVERLAPPED, 0);//overlapped
+	//tun_fd = CreateFile(buf, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, 0);
 	if (tun_fd == TUNFD_INVALID_VALUE) {
 		int errcode = GetLastError();
 
@@ -263,7 +263,7 @@ tuntap_get_mtu(struct device *dev) {
 		tuntap_log(TUNTAP_LOG_ERR, (const char *)formated_error(L"%1%0", errcode));
 		return -1;
     }
-	return 0;
+	return (int)len;
 }
 
 int
@@ -380,3 +380,73 @@ tuntap_get_descr(struct device* dev) {
 		"Your system does not support tuntap_get_descr()");
 	return NULL;
 }
+
+/*==================================================================*/
+
+
+/*
+void startRW(struct device* dev) {
+	//一直從tap read傳到onRead,一直從writeQ pop資料出來寫到tap
+	RWflag = 1;
+	char buffer_read[1500];
+	char buffer_write[1500];
+	DWORD buffer_read_len;//成功讀取回傳值
+	DWORD buffer_write_len;//成功寫入回傳值
+	HANDLE event_read = CreateEvent(NULL, FALSE, FALSE, NULL);
+	HANDLE event_write = CreateEvent(NULL, FALSE, FALSE, NULL);
+	OVERLAPPED overlapped_read = { 0 };
+	OVERLAPPED overlapped_write = { 0 };
+	overlapped_read.hEvent = INVALID_HANDLE_VALUE;
+	overlapped_write.hEvent = INVALID_HANDLE_VALUE;
+
+	while (RWflag) {
+		if (!isEmpty(writeQ) && overlapped_write.hEvent == INVALID_HANDLE_VALUE) {//write
+			struct PairQ* writeItem = popPair(writeQ);
+			int len = writeItem->second;
+			memcpy(buffer_write, writeItem->first, len);
+			free(writeItem->first);
+			free(writeItem);
+			memset(&overlapped_write, 0, sizeof overlapped_write);
+			overlapped_write.hEvent = event_write;
+
+			if (WriteFile(dev->tun_fd, buffer_write, len, &buffer_write_len, &overlapped_write) != 0) {
+				int errcode = GetLastError();
+
+				tuntap_log(TUNTAP_LOG_ERR, (const char*)formated_error(L"%1%0", errcode));
+			}
+		}
+
+		if (overlapped_read.hEvent == INVALID_HANDLE_VALUE) {//read
+			memset(&overlapped_read, 0, sizeof overlapped_read);
+			overlapped_read.hEvent = event_read;
+			if (ReadFile(dev->tun_fd, buffer_read, sizeof buffer_read, &buffer_read_len, &overlapped_read) == 0) {
+				int errcode = GetLastError();
+
+				tuntap_log(TUNTAP_LOG_ERR, (const char*)formated_error(L"%1%0", errcode));
+			}
+		}
+
+		//waiting for event
+		HANDLE events[] = { event_read, event_write };
+		const size_t event_count = sizeof(events) / sizeof(HANDLE);
+		DWORD result = WaitForMultipleObjects(event_count, events, FALSE, INFINITE);
+
+		if (result < WAIT_OBJECT_0 || result >= WAIT_OBJECT_0 + event_count)
+			printf("Unable to wait for multiple objects");
+		result -= WAIT_OBJECT_0;
+
+		if (events[result] == event_read) {//Read done.
+			if (GetOverlappedResult(dev->tun_fd, &overlapped_read, &buffer_read_len, FALSE) == 0)
+				printf("Unable to get overlapped result");
+			overlapped_read.hEvent = INVALID_HANDLE_VALUE;
+			onRead(buffer_read, sizeof buffer_read);
+		}
+		if (events[result] == event_write) {//Write done.
+			if (GetOverlappedResult(dev->tun_fd, &overlapped_write, &buffer_write_len, FALSE) == 0)
+				printf("Unable to get overlapped result");
+			overlapped_write.hEvent = INVALID_HANDLE_VALUE;
+		}
+	}
+	CloseHandle(overlapped_read.hEvent);
+	CloseHandle(overlapped_write.hEvent);
+}*/

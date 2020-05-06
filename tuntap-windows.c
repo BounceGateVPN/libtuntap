@@ -173,8 +173,8 @@ tuntap_start(struct device *dev, int mode, int tun) {
 
 	deviceid = reg_query(NETWORK_ADAPTERS);
 	snprintf(buf, sizeof buf, "\\\\.\\Global\\%s.tap", deviceid);
-	//tun_fd = CreateFile(buf, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM|FILE_FLAG_OVERLAPPED, 0);
-	tun_fd = CreateFile(buf, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, 0);
+	tun_fd = CreateFileA(buf, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+	//tun_fd = CreateFile(buf, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, 0);
 	if (tun_fd == TUNFD_INVALID_VALUE) {
 		int errcode = GetLastError();
 
@@ -263,7 +263,7 @@ tuntap_get_mtu(struct device *dev) {
 		tuntap_log(TUNTAP_LOG_ERR, (const char *)formated_error(L"%1%0", errcode));
 		return -1;
     }
-	return 0;
+	return (int)len;
 }
 
 int

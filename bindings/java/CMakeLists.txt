@@ -9,6 +9,7 @@ include_directories(${JAVA_INCLUDE_PATH2})
 add_library(tuntap4j
 	com_github_smallru8_driver_tuntap_TunTap.h
 	com_github_smallru8_driver_tuntap_TunTap.cpp
+	converter.h
 	converter.cpp
 )
 target_include_directories(tuntap4j PUBLIC

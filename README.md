@@ -1,4 +1,4 @@
-# libtuntap 0.4
+# libtuntap 0.4.1
 
 libtuntap is a library for configuring TUN or TAP devices in a portable manner.
 
@@ -38,10 +38,10 @@ systems.
    * Linux;
    * NetBSD;
    * Darwin (up to High Sierra).
+   * Windows;
 
 #### Current Porting Efforts
 
-   * Windows;
    * FreeBSD.
 
 #### In the future
@@ -77,20 +77,20 @@ The following options can be tweaked:
 
 - `ENABLE_CXX`: Enable building of the C++ wrapper library libtuntap++;
 - `ENABLE_PYTHON`: Enable building of the Python wrapper library pytuntap;
+- `ENABLE_JAVA`: Enable building of the Java wrapper library tuntap4J;
 - `BUILD_TESTING`: Enable building of the regress tests;
 - `BUILD_SHARED_LIBS`: Build shared libraries instead of static ones.
 
 #### Other languages bindings
 
-We currently provide wrappers for two other languages: C++ and Python,
-respectively named libtuntap++ and pytuntap.  More instructions about them is
-provided in the [`bindings`](bindings/README.md) folder.
+We currently provide wrappers for two other languages: C++, Java, and Python,respectively named libtuntap++ and pytuntap.  More instructions about them is provided in the [`bindings`](bindings/README.md) folder.
 
-The C++ library is built by default and can be disabled with the flag
-`ENABLE_CXX`.
+The C++ library is built by default and can be disabled with the flag `ENABLE_CXX`.
 
 The Python library is disabled by default and requires both `ENABLE_CXX` and
 `ENABLE_PYTHON` to work.  You will also need Python 3.6 and Boost libraries.
+
+The Java library is disabled by default and requires `ENABLE_Java` to work.
 
 Example cmake invocation:
 
@@ -111,7 +111,7 @@ Example cmake invocation:
 
 #### Static or shared
 
-Up to version 0.3 the libtuntap `CMakeFiles.txt` exported two libraries: one shared, one static. To simplify the building of the wrapper libraries it was decided to only build one. The default is to build a static library but this behaviour can be changed with the option `BUILD_SHARED_LIBS`.
+Up to version 0.4.1 the libtuntap `CMakeFiles.txt` exported two libraries: one shared, one static. To simplify the building of the wrapper libraries it was decided to only build one. The default is to build a static library but this behaviour can be changed with the option `BUILD_SHARED_LIBS`.
 
 Example cmake invocation:
     
@@ -157,5 +157,5 @@ at rooms.bouledef.eu.
 
 ## License
 
-All the code is licensed under the ISC License.
-It's free, not GPLed !
+When developed under windows system, it's licensed under the GPLv2.  
+On other systems, it's licensed under the BSD license.  

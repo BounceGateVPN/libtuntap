@@ -12,4 +12,4 @@
 - [ ] Test on FreeBSD
 - [ ] Test on Darwin
 - [X] Test on Debian
-- [ ] Test on Windows
+- [X] Test on Windows

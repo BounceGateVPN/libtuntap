@@ -82,6 +82,31 @@
 # if defined Windows
 typedef IN_ADDR t_tun_in_addr;
 typedef IN6_ADDR t_tun_in6_addr;
+
+#define TUN_BUFFER_SIZE 1560
+#define TUN_MAX_BUFFER_COUNT 32
+typedef struct tun_buffer_s {
+    unsigned char buffer[TUN_BUFFER_SIZE];
+    unsigned long read_size;
+    struct tun_buffer_s* next;
+} tun_buffer_t;
+typedef struct tap_win32_overlapped {
+    HANDLE handle;
+    HANDLE read_event;
+    HANDLE write_event;
+    HANDLE output_queue_semaphore;
+    HANDLE free_list_semaphore;
+    HANDLE tap_semaphore;
+    CRITICAL_SECTION output_queue_cs;
+    CRITICAL_SECTION free_list_cs;
+    OVERLAPPED read_overlapped;
+    OVERLAPPED write_overlapped;
+    tun_buffer_t buffers[TUN_MAX_BUFFER_COUNT];
+    tun_buffer_t* free_list;
+    tun_buffer_t* output_queue_front;
+    tun_buffer_t* output_queue_back;
+} tap_win32_overlapped_t;
+
 # else /* Unix */
 typedef struct in_addr t_tun_in_addr;
 typedef struct in6_addr t_tun_in6_addr;
@@ -93,6 +118,9 @@ struct device {
 	int		flags;     /* ifr.ifr_flags on Unix */
 	unsigned char	hwaddr[ETHER_ADDR_LEN];
 	char		if_name[IF_NAMESIZE + 1];
+# if defined Windows
+    tap_win32_overlapped_t *tap_overlapped;
+# endif
 };
 
 /*

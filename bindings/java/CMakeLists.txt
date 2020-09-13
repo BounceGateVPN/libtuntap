@@ -6,12 +6,17 @@ include_directories(${JNI_INCLUDE_DIRS})
 include_directories(${JAVA_INCLUDE_PATH})
 include_directories(${JAVA_INCLUDE_PATH2})
 
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
 add_library(tuntap4j
 	com_github_smallru8_driver_tuntap_TunTap.h
 	com_github_smallru8_driver_tuntap_TunTap.cpp
 	converter.h
 	converter.cpp
 )
+
+target_link_libraries(tuntap4j PUBLIC tuntap)
+
 target_include_directories(tuntap4j PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../..

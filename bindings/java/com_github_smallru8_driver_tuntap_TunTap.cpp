@@ -171,7 +171,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tunta
 	char *cData = (char*)malloc(sizeof(char)*ret);
 
 	ret = tuntap_read(dev,cData,ret);
-	if(ret==-1||ret = 0)
+	if(ret==-1||ret==0)
         return NULL;
 	
 	jbyteArray jData = env->NewByteArray(ret);

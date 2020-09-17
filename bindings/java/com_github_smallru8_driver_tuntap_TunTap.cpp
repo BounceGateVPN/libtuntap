@@ -1,5 +1,4 @@
 #include "com_github_smallru8_driver_tuntap_TunTap.h"
-#include "tuntap.h"
 
 struct device *dev;
 

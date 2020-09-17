@@ -404,11 +404,13 @@ static int tap_win32_read(tap_win32_overlapped_t *overlapped,
     tun_buffer_t* buffer = get_buffer_from_output_queue_immediate(overlapped);
 
     if(buffer != NULL) {
-        *pbuf = buffer->buffer;
+        //*pbuf = buffer->buffer;
         size = (int)buffer->read_size;
         if(size > max_size) {
             size = max_size;
         }
+        memcpy(*pbuf, buffer->buffer, size);//§ï¥Îcopy
+        tap_win32_free_buffer(overlapped, buffer);//free buffer
     }
 
     return size;

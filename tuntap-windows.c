@@ -396,6 +396,13 @@ static DWORD WINAPI tap_win32_thread_entry(LPVOID param)
     return 0;
 }
 
+static void tap_win32_free_buffer(tap_win32_overlapped_t* overlapped,
+    uint8_t* pbuf)
+{
+    tun_buffer_t* buffer = (tun_buffer_t*)pbuf;
+    put_buffer_on_free_list(overlapped, buffer);
+}
+
 static int tap_win32_read(tap_win32_overlapped_t *overlapped,
                           uint8_t **pbuf, int max_size)
 {
@@ -414,13 +421,6 @@ static int tap_win32_read(tap_win32_overlapped_t *overlapped,
     }
 
     return size;
-}
-
-static void tap_win32_free_buffer(tap_win32_overlapped_t *overlapped,
-                                  uint8_t *pbuf)
-{
-    tun_buffer_t* buffer = (tun_buffer_t*)pbuf;
-    put_buffer_on_free_list(overlapped, buffer);
 }
 
 static char *

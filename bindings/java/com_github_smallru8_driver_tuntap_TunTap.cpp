@@ -1,6 +1,8 @@
 #include "com_github_smallru8_driver_tuntap_TunTap.h"
 
 struct device *dev;
+char *cData_r = (char*)malloc(sizeof(char)*1560);
+char *cData_w = (char*)malloc(sizeof(char)*1560);
 
 JNIEXPORT void JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tuntap_1init
   (JNIEnv *env, jobject obj){
@@ -167,18 +169,18 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tunta
 	int ret = 1560;
 	if(len>0)
 		ret = len;
-	char *cData = (char*)malloc(sizeof(char)*ret);//要修正#######
+	//char *cData = (char*)malloc(sizeof(char)*ret);//要修正#######
 # if defined Windows //windows
-	ret = tuntap_read(dev,&cData,ret);
+	ret = tuntap_read(dev,&cData_r,ret);
 # else //unix
-    ret = tuntap_read(dev, cData, ret);
+    ret = tuntap_read(dev, cData_r, ret);
 #endif
 	if(ret==-1||ret==0)
         return NULL;
 	
 	jbyteArray jData = env->NewByteArray(ret);
-	env->SetByteArrayRegion(jData, 0, ret, (jbyte*)cData);
-	free(cData);
+	env->SetByteArrayRegion(jData, 0, ret, (jbyte*)cData_r);
+	//free(cData);
 	return jData;
 }
 
@@ -191,12 +193,12 @@ JNIEXPORT jint JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tuntap_1wri
   (JNIEnv *env, jobject obj, jbyteArray data, jint len){
 	jbyte *jData;
 	jData = env->GetByteArrayElements(data, 0);
-	char *cData = (char*)malloc(sizeof(char)*len);
+	//char *cData = (char*)malloc(sizeof(char)*len);
 
-	memcpy(cData, jData, len);
+	memcpy(cData_w, jData, len);
 	env->ReleaseByteArrayElements(data, jData, 0);
-	int ret = tuntap_write(dev,cData,len);
-	free(cData);
+	int ret = tuntap_write(dev,cData_w,len);
+	//free(cData);
 
 	//return 0 means no problem
 	//return -1 means error
@@ -241,4 +243,3 @@ JNIEXPORT jint JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tuntap_1set
 JNIEXPORT jint JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tuntap_1get_1fd
   (JNIEnv *env, jobject obj){
 	return (int)tuntap_get_fd(dev);
-}

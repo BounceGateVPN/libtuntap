@@ -243,3 +243,4 @@ JNIEXPORT jint JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tuntap_1set
 JNIEXPORT jint JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tuntap_1get_1fd
   (JNIEnv *env, jobject obj){
 	return (int)tuntap_get_fd(dev);
+}

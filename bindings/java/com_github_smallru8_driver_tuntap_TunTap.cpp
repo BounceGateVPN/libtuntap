@@ -167,7 +167,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_smallru8_driver_tuntap_TunTap_tunta
 	int ret = 1560;
 	if(len>0)
 		ret = len;
-	char *cData = (char*)malloc(sizeof(char)*ret);
+	char *cData = (char*)malloc(sizeof(char)*ret);//要修正#######
 # if defined Windows //windows
 	ret = tuntap_read(dev,&cData,ret);
 # else //unix
